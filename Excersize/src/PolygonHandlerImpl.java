@@ -1,8 +1,8 @@
-import java.awt.Polygon;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.stream.DoubleStream;
 
 public class PolygonHandlerImpl implements PolygonHandler {
@@ -17,9 +17,19 @@ public class PolygonHandlerImpl implements PolygonHandler {
     public Polygon CreatePolygon(double[] sides) throws Exception {
         if (sides.length < 3) throw new Exception("invalid less than 3");
         if (sides.length > 10) throw new Exception("invalid greater than 10");
+        if (!possibleSides(sides)) throw new Exception("invalid side length");
         Polygon P = new Polygon();
         P.sides = sides;
         return P;
+    }
+
+    private boolean possibleSides(double[] sides)
+    {
+        for (int i = 0; i < sides.length; i++) {
+            if (sides[i] >= DoubleStream.of(sides).sum() / 2) return false;
+            if (sides[i] < 0) return false;
+        }
+        return true;
     }
 
     /**
@@ -53,8 +63,8 @@ public class PolygonHandlerImpl implements PolygonHandler {
      * @throws Exception If polygon object is invalid or not determinerable without angles.
      */
     @Override
-    public double CalculateArea(Polygon p) throws Exception {
-        if (p.sides.length != 3) throw new Exception("Not a triangle");
+    public double CalculateArea(Polygon p) throws AssertionError {
+        if (p.sides.length != 3) throw new AssertionError("Not a triangle");
         double S = (p.sides[0] + p.sides[1] + p.sides[2])/2;
         double Value = Math.sqrt(S*(S - p.sides[0])*(S - p.sides[1])*(S - p.sides[2]));
         DecimalFormat df = new DecimalFormat("#.###");
@@ -79,6 +89,7 @@ public class PolygonHandlerImpl implements PolygonHandler {
             {
                 swapped = true;
                 i++;
+                if (i >= p.sides.length) break;
             }
             if (swapped)
             {
@@ -89,8 +100,8 @@ public class PolygonHandlerImpl implements PolygonHandler {
                 newSides[i] = p.sides[i];
             }
         }
-        p.sides = newSides;
-        return p;
+        Polygon d = CreatePolygon(newSides);
+        return d;
     }
 
     /**
@@ -102,6 +113,7 @@ public class PolygonHandlerImpl implements PolygonHandler {
      */
     @Override
     public double[] CalculateAnglesFromTriangle(Polygon p) throws Exception {
+        if (p.sides.length != 3) throw new Exception("NOPE");
         DecimalFormat df = new DecimalFormat("#.###");
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
         dfs.setDecimalSeparator('.');
@@ -176,25 +188,52 @@ public class PolygonHandlerImpl implements PolygonHandler {
      */
     @Override
     public ArrayList<Polygon> SortByArea(ArrayList<Polygon> polygonArrayList) throws Exception {
-                /*
+        /*
         DecimalFormat df = new DecimalFormat("#.###");
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
         dfs.setDecimalSeparator('.');
         df.setDecimalFormatSymbols(dfs);
-
+        */
         for (Polygon polygon : polygonArrayList)
         {
             if (polygon.sides.length != 3) throw new Exception("Not a triangle");
         }
+        polygonArrayList.sort(new Comparator<Polygon>() {
+            @Override
+            public int compare(Polygon o1, Polygon o2) {
+                return Double.compare(CalculateArea(o1),CalculateArea(o2));
+            }
+        });
+        /*
         ArrayList<Polygon> newList = new ArrayList<>();
         Polygon smallestPolygon = polygonArrayList.get(0);
-        for (Polygon polygon : polygonArrayList)
+        boolean running = true;
+        while (running)
         {
+            for (int i = 0; i < polygonArrayList.size(); i++) {
+                for (Polygon polygon : polygonArrayList)
+                {
+                    if (CalculateArea(polygon) < CalculateArea(smallestPolygon)) smallestPolygon = polygon;
+                }
+                polygonArrayList.remove(smallestPolygon);
+                polygonArrayList.add(polygonArrayList.get(i));
+                polygonArrayList.set(i,smallestPolygon);
+            }
+            smallestPolygon = polygonArrayList.get(0);
+            for (Polygon polygon : polygonArrayList)
+            {
+                if (CalculateArea(smallestPolygon) < CalculateArea(polygon))
+                {
+                    smallestPolygon = polygon;
+                    running = false;
+                }
+                else
+                {
+                    running = true;
+                    break;
+                }
+            }
         }
-
-        //double S = (p.sides[0] + p.sides[1] + p.sides[2])/2;
-        //double Value = Math.sqrt(S*(S - p.sides[0])*(S - p.sides[1])*(S - p.sides[2]));
-        //String temp = df.format(Value);
         */
         return polygonArrayList;
     }
@@ -208,6 +247,23 @@ public class PolygonHandlerImpl implements PolygonHandler {
      */
     @Override
     public ArrayList<Polygon> SortByPerimeter(ArrayList<Polygon> polygonArrayList) throws Exception {
-        return null;
+        /*
+        for (Polygon polygon : polygonArrayList)
+        {
+            if (polygon.sides.length != 3) throw new Exception("Not a triangle");
+        }
+        */
+        polygonArrayList.sort(new Comparator<Polygon>() {
+            @Override
+            public int compare(Polygon o1, Polygon o2) {
+                return Double.compare(calculatePerimeter(o1),calculatePerimeter(o2));
+            }
+        });
+        return polygonArrayList;
+    }
+
+    private double calculatePerimeter(Polygon p)
+    {
+        return DoubleStream.of(p.sides).sum();
     }
 }

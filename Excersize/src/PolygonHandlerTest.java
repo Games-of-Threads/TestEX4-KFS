@@ -34,7 +34,7 @@ class PolygonHandlerTest {
         String pType;
 
         //Triangle
-        sides = new double[] {1, 2, 3};
+        sides = new double[] {1, 2, 2};
         P = PH.CreatePolygon(sides);
         pType = PH.CalculatePolygonType(P);
         assertTrue(pType == "Triangle");
@@ -180,10 +180,10 @@ class PolygonHandlerTest {
 
         sides = new double[] {2,3,4,5,4};
         P = PH.CreatePolygon(sides);
-        sides = new double[] {2.3,3.1,3.5,9.5};
+        sides = new double[] {2.3,3.1,3.5,5.5};
         B = PH.CreatePolygon(sides);
         Polygon Biggest = PH.ComparePolygonByPerimeter(P,B);
-        assertTrue(Biggest == B && Biggest != null);
+        assertTrue(Biggest == P && Biggest != null);
     }
 
     @org.junit.jupiter.api.Test
@@ -213,7 +213,7 @@ class PolygonHandlerTest {
         P = PH.CreatePolygon(sides);
         sides = new double[] {3,4,5,3}; //15
         B = PH.CreatePolygon(sides);
-        area = PH.IntersectPerimeterPolygon(P,B);
+        area = PH.UnionPerimeterPolygon(P,B);
 
         assertTrue(area == 32);
     }
@@ -223,15 +223,15 @@ class PolygonHandlerTest {
 
         double[] sides;
 
-        sides = new double[] {1,2,3,4};
+        sides = new double[] {1,2,2};
         Polygon A = PH.CreatePolygon(sides);
-        sides = new double[] {11,22,33,44};
+        sides = new double[] {11,22,22};
         Polygon B = PH.CreatePolygon(sides);
-        sides = new double[] {111,222,333,444};
+        sides = new double[] {111,222,222};
         Polygon C = PH.CreatePolygon(sides);
-        sides = new double[] {1111,2222,3333,4444};
+        sides = new double[] {1111,2222,2222};
         Polygon D = PH.CreatePolygon(sides);
-        sides = new double[] {11111,22222,33333,44444};
+        sides = new double[] {11111,22222,22222};
         Polygon E = PH.CreatePolygon(sides);
 
         ArrayList<Polygon> list = new ArrayList<Polygon>();
@@ -257,11 +257,11 @@ class PolygonHandlerTest {
 
         double[] sides;
 
-        sides = new double[] {1,2,3};
+        sides = new double[] {1,2,2};
         Polygon A = PH.CreatePolygon(sides);
         sides = new double[] {11,22,33,44,55};
         Polygon B = PH.CreatePolygon(sides);
-        sides = new double[] {111,222,333};
+        sides = new double[] {111,222,222};
         Polygon C = PH.CreatePolygon(sides);
         sides = new double[] {1111,2222,3333,4444};
         Polygon D = PH.CreatePolygon(sides);
@@ -299,9 +299,9 @@ class PolygonHandlerTest {
         assertThrows(Exception.class, () -> {Polygon p = PH.CreatePolygon(finalSides);});
 
         //valid with 3 sides
-        sides = new double[] {1,5,3};
+        sides = new double[] {1,3,3};
         Polygon a = PH.CreatePolygon(sides);
-        assertTrue(a.sides[0] == 1 && a.sides[1] == 5 && a.sides[2] == 3);
+        assertTrue(a.sides[0] == 1 && a.sides[1] == 3 && a.sides[2] == 3);
 
         //valid with 10 sides
         sides = new double[] {101,102,103,104,105,106,107,108,109,110};
@@ -398,7 +398,7 @@ class PolygonHandlerTest {
         P = PH.CreatePolygon(sides);
         Polygon finalP = P;
         assertThrows(Exception.class, () -> { double[] angles = PH.CalculateAnglesFromTriangle(finalP);});
-        assertThrows(Exception.class, () -> { double area = PH.CalculateArea(finalP);});
+        assertThrows(AssertionError.class, () -> { double area = PH.CalculateArea(finalP);});
 
         //with 2 sides. invalid
         sides = new double[] {6,5};
@@ -440,13 +440,13 @@ class PolygonHandlerTest {
         sides = new double[]{10,22,15};
         P = PH.CreatePolygon(sides);
         list.add(P);
-        sides = new double[]{12,12,45};
+        sides = new double[]{12,12,21};
         P = PH.CreatePolygon(sides);
         list.add(P);
-        sides = new double[]{30,12,11};
+        sides = new double[]{20,12,11};
         P = PH.CreatePolygon(sides);
         list.add(P);
-        sides = new double[]{30,13,14};
+        sides = new double[]{10,13,14};
         P = PH.CreatePolygon(sides);
         list.add(P);
 
@@ -457,7 +457,7 @@ class PolygonHandlerTest {
         sides = new double[]{10,13,15};
         P = PH.CreatePolygon(sides);
         list.add(P);
-        sides = new double[]{10,22,15,122,13};
+        sides = new double[]{10,22,15,22,13};
         P = PH.CreatePolygon(sides);
         list.add(P);
         sides = new double[]{10,9,11};
