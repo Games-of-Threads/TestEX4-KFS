@@ -4,7 +4,7 @@
 ## Code
 
 Hamcrest test cases
-```
+
 @org.junit.jupiter.api.Test
     void createPolygon() throws Exception {
         PolygonHandler PH = new PolygonHandlerImpl();
@@ -24,9 +24,9 @@ Hamcrest test cases
         Polygon Best = PH.ComparePolygonByPerimeter(a,b);
         assertThat(b.toString(), anyOf(is(Best.toString())));
     }
-```
+    
 Data Driven Test cases
-```
+
     @Test
     void DataDrivenTest1() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
@@ -52,6 +52,6 @@ Data Driven Test cases
         list = PH.SortByPerimeter(list);
         list.forEach(x -> System.out.println(x.sides[0]+x.sides[1]+x.sides[2]));
     }
-```
+    
 
 ![](https://i.gyazo.com/21143c3be1d85e284b8b6a749c5049fb.png)
