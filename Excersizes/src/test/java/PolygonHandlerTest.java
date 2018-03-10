@@ -40,34 +40,26 @@ class PolygonHandlerTest {
     @Test
     void DataDrivenTest1() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-
         ArrayList<Polygon> list = new ArrayList<Polygon>();
         Polygon[] mypolygonArray = mapper.readValue(new File("C:\\output\\mylist.json"), Polygon[].class);
-
         for (Polygon polygon : mypolygonArray) {
             list.add(polygon);
         }
         PolygonHandler PH = new PolygonHandlerImpl();
         list = PH.SortByArea(list);
         list.forEach(x -> System.out.println(x.sides[0]+x.sides[1]+x.sides[2]));
-
-
     }
 
     @Test
     void DataDrivenTest2() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-
         ArrayList<Polygon> list = new ArrayList<Polygon>();
         Polygon[] mypolygonArray = mapper.readValue(new File("C:\\output\\mylist.json"), Polygon[].class);
-
         for (Polygon polygon : mypolygonArray) {
             list.add(polygon);
         }
         PolygonHandler PH = new PolygonHandlerImpl();
         list = PH.SortByPerimeter(list);
         list.forEach(x -> System.out.println(x.sides[0]+x.sides[1]+x.sides[2]));
-
-
     }
 }
