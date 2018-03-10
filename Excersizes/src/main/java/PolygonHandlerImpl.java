@@ -1,4 +1,3 @@
-import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -23,8 +22,7 @@ public class PolygonHandlerImpl implements PolygonHandler {
         return P;
     }
 
-    private boolean possibleSides(double[] sides)
-    {
+    private boolean possibleSides(double[] sides) {
         for (int i = 0; i < sides.length; i++) {
             if (sides[i] >= DoubleStream.of(sides).sum() / 2) return false;
             if (sides[i] < 0) return false;
@@ -65,8 +63,8 @@ public class PolygonHandlerImpl implements PolygonHandler {
     @Override
     public double CalculateArea(Polygon p) throws AssertionError {
         if (p.sides.length != 3) throw new AssertionError("Not a triangle");
-        double S = (p.sides[0] + p.sides[1] + p.sides[2])/2;
-        double Value = Math.sqrt(S*(S - p.sides[0])*(S - p.sides[1])*(S - p.sides[2]));
+        double S = (p.sides[0] + p.sides[1] + p.sides[2]) / 2;
+        double Value = Math.sqrt(S * (S - p.sides[0]) * (S - p.sides[1]) * (S - p.sides[2]));
         DecimalFormat df = new DecimalFormat("#.###");
         String temp = df.format(Value);
         return Double.parseDouble(temp);
@@ -85,18 +83,14 @@ public class PolygonHandlerImpl implements PolygonHandler {
         double[] newSides = new double[p.sides.length - 1];
         boolean swapped = false;
         for (int i = 0; i < p.sides.length; i++) {
-            if (i == index)
-            {
+            if (i == index) {
                 swapped = true;
                 i++;
                 if (i >= p.sides.length) break;
             }
-            if (swapped)
-            {
-                newSides[i-1] = p.sides[i];
-            }
-            else
-            {
+            if (swapped) {
+                newSides[i - 1] = p.sides[i];
+            } else {
                 newSides[i] = p.sides[i];
             }
         }
@@ -118,16 +112,16 @@ public class PolygonHandlerImpl implements PolygonHandler {
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
         dfs.setDecimalSeparator('.');
         df.setDecimalFormatSymbols(dfs);
-        double alpha = Math.acos((Math.pow(p.sides[1],2) + Math.pow(p.sides[2],2) - Math.pow(p.sides[0],2))/(2* p.sides[1] * p.sides[2]));
+        double alpha = Math.acos((Math.pow(p.sides[1], 2) + Math.pow(p.sides[2], 2) - Math.pow(p.sides[0], 2)) / (2 * p.sides[1] * p.sides[2]));
         alpha = alpha * (180 / Math.PI);
         String Alpha = df.format(alpha);
-        double bravo = Math.acos((Math.pow(p.sides[0],2) + Math.pow(p.sides[2],2) - Math.pow(p.sides[1],2))/(2* p.sides[0] * p.sides[2]));
+        double bravo = Math.acos((Math.pow(p.sides[0], 2) + Math.pow(p.sides[2], 2) - Math.pow(p.sides[1], 2)) / (2 * p.sides[0] * p.sides[2]));
         bravo = bravo * (180 / Math.PI);
         String Bravo = df.format(bravo);
-        double charlie = Math.acos((Math.pow(p.sides[0],2) + Math.pow(p.sides[1],2) - Math.pow(p.sides[2],2))/(2* p.sides[0] * p.sides[1]));
+        double charlie = Math.acos((Math.pow(p.sides[0], 2) + Math.pow(p.sides[1], 2) - Math.pow(p.sides[2], 2)) / (2 * p.sides[0] * p.sides[1]));
         charlie = charlie * (180 / Math.PI);
         String Charlie = df.format(charlie);
-        double[] total = new double[] {Double.parseDouble(Alpha),Double.parseDouble(Bravo),Double.parseDouble(Charlie)};
+        double[] total = new double[]{Double.parseDouble(Alpha), Double.parseDouble(Bravo), Double.parseDouble(Charlie)};
         return total;
     }
 
@@ -194,14 +188,13 @@ public class PolygonHandlerImpl implements PolygonHandler {
         dfs.setDecimalSeparator('.');
         df.setDecimalFormatSymbols(dfs);
         */
-        for (Polygon polygon : polygonArrayList)
-        {
+        for (Polygon polygon : polygonArrayList) {
             if (polygon.sides.length != 3) throw new Exception("Not a triangle");
         }
         polygonArrayList.sort(new Comparator<Polygon>() {
             @Override
             public int compare(Polygon o1, Polygon o2) {
-                return Double.compare(CalculateArea(o1),CalculateArea(o2));
+                return Double.compare(CalculateArea(o1), CalculateArea(o2));
             }
         });
         /*
@@ -256,14 +249,13 @@ public class PolygonHandlerImpl implements PolygonHandler {
         polygonArrayList.sort(new Comparator<Polygon>() {
             @Override
             public int compare(Polygon o1, Polygon o2) {
-                return Double.compare(calculatePerimeter(o1),calculatePerimeter(o2));
+                return Double.compare(calculatePerimeter(o1), calculatePerimeter(o2));
             }
         });
         return polygonArrayList;
     }
 
-    private double calculatePerimeter(Polygon p)
-    {
+    private double calculatePerimeter(Polygon p) {
         return DoubleStream.of(p.sides).sum();
     }
 }
